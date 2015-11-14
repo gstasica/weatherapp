@@ -1,4 +1,15 @@
 <div class="row">
-	<h2>Forecast for: {{city}}</h2>
+	<h2>Forecast for: {{city}}, {{weatherResult.city.country}}</h2>
+</div>
+
+<div ng-repeat="w in weatherResult.list">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Day: {{ convertToDate(w.dt) | date: 'EEE MMM dd, yyyy' }}</h3>
+  </div>
+  <div class="panel-body">
+    {{ convertToCel(w.temp.day) }}&deg;C
+  </div>
+</div>
 </div>
 

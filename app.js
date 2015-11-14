@@ -12,6 +12,10 @@ weatherApp.config(function($routeProvider){
 			templateUrl : 'pages/forecast.htm',
 			controller: 'forecastCtrl'
 		})
+		.when('/forecast/:days', {
+			templateUrl : 'pages/forecast.htm',
+			controller: 'forecastCtrl'
+		})
 		.otherwise( {
 			templateUrl:'pages/home.htm',
 			controller: 'homeCtrl'
@@ -22,11 +26,8 @@ weatherApp.config(function($routeProvider){
 weatherApp.service('forecastService', function(){
 
 	var self = this;
-	this.city = '';
+	this.city = 'Zywiec';
 
-	// this.getCity = function(){
-	// 	return self.city;
-	// };
 });
 
 //CONTROLLERS
@@ -39,6 +40,23 @@ weatherApp.controller('homeCtrl', ['$scope','forecastService', function($scope,f
 
 }]);
 
-weatherApp.controller('forecastCtrl', ['$scope','forecastService', function($scope, forecastService){
+weatherApp.controller('forecastCtrl', ['$scope','$routeParams','$resource','forecastService', function($scope, $routeParams, $resource, forecastService){
 	$scope.city=forecastService.city;
+	
+	$scope.weatherApi = $resource("http://api.openweathermap.org/data/2.5/forecast/daily", 
+		{ callback : 'JSON_CALLBACK' }, { get: { method : 'JSONP' } });
+
+	$scope.weatherResult = $scope.weatherApi.get({
+		q : $scope.city,
+		cnt: $routeParams.days || 1,
+		appid:'2de143494c0b295cca9337e1e96b00e0'
+	});
+
+	$scope.convertToCel = function(degK){
+		return Math.round(100 * (degK - 273.15)/100);
+	};
+
+	$scope.convertToDate = function(dt){
+		return new Date(dt * 1000);
+	};
 }]);
