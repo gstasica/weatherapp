@@ -49,6 +49,7 @@ weatherApp.controller('forecastCtrl', ['$scope','$routeParams','$resource','fore
 	$scope.weatherResult = $scope.weatherApi.get({
 		q : $scope.city,
 		cnt: $routeParams.days || 1,
+		//the appId should be replaced with a one that you got after registering at http://api.openweathermap.org/
 		appid:'2de143494c0b295cca9337e1e96b00e0'
 	});
 
