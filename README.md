@@ -1,2 +1,1 @@
-# weatherapp
-angularjs weather app
+A sample weather application build for the purpose of 'Learn and Understand AngularJS' course at 'udemy.com'
