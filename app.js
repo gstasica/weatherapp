@@ -23,19 +23,37 @@ weatherApp.config(function($routeProvider){
 });
 
 //SERVICES
-weatherApp.service('forecastService', function(){
+weatherApp.service('cityService', function(){
 
 	var self = this;
 	this.city = 'Zywiec';
 
 });
 
+weatherApp.service('forecastService', ['$resource', function($resource){
+
+	// var self = this;
+	
+	var weatherApi = $resource("http://api.openweathermap.org/data/2.5/forecast/daily", 
+		{ callback : 'JSON_CALLBACK' }, { get: { method : 'JSONP' } });
+
+//weatherResult
+	this.getForecast = function(city, days){
+		return weatherApi.get({
+			q : city,
+			cnt: days,
+			//the appId should be replaced with a one that you got after registering at http://api.openweathermap.org/
+			appid:'2de143494c0b295cca9337e1e96b00e0'
+		});
+	};
+}]);
+
 //CONTROLLERS
-weatherApp.controller('homeCtrl', ['$scope','$location','forecastService', function($scope,$location, forecastService){
-	 $scope.city = forecastService.city;
+weatherApp.controller('homeCtrl', ['$scope','$location','cityService', function($scope,$location, cityService){
+	 $scope.city = cityService.city;
 
 	 $scope.$watch('city', function(){
-	 	forecastService.city = $scope.city;
+	 	cityService.city = $scope.city;
 	 });
 
 	 $scope.submit = function(){
@@ -44,20 +62,14 @@ weatherApp.controller('homeCtrl', ['$scope','$location','forecastService', funct
 
 }]);
 
-weatherApp.controller('forecastCtrl', ['$scope','$routeParams','$resource','forecastService', function($scope, $routeParams, $resource, forecastService){
-	$scope.city = forecastService.city;
+weatherApp.controller('forecastCtrl', ['$scope','$routeParams', 'cityService','forecastService', 
+	function($scope, $routeParams, cityService, forecastService){
+	
+	$scope.city = cityService.city;
 	$scope.days = $routeParams.days || '2'
 	
-	$scope.weatherApi = $resource("http://api.openweathermap.org/data/2.5/forecast/daily", 
-		{ callback : 'JSON_CALLBACK' }, { get: { method : 'JSONP' } });
-
-	$scope.weatherResult = $scope.weatherApi.get({
-		q : $scope.city,
-		cnt: $scope.days,
-		//the appId should be replaced with a one that you got after registering at http://api.openweathermap.org/
-		appid:'2de143494c0b295cca9337e1e96b00e0'
-	});
-
+	$scope.weatherResult = forecastService.getForecast($scope.city, $scope.days);
+	
 	$scope.convertToCel = function(degK){
 		return Math.round(100 * (degK - 273.15)/100);
 	};
