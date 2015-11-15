@@ -31,12 +31,16 @@ weatherApp.service('forecastService', function(){
 });
 
 //CONTROLLERS
-weatherApp.controller('homeCtrl', ['$scope','forecastService', function($scope,forecastService){
+weatherApp.controller('homeCtrl', ['$scope','$location','forecastService', function($scope,$location, forecastService){
 	 $scope.city = forecastService.city;
 
 	 $scope.$watch('city', function(){
 	 	forecastService.city = $scope.city;
 	 });
+
+	 $scope.submit = function(){
+	 	return $location.path('/forecast');
+	 };
 
 }]);
 
