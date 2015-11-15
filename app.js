@@ -62,3 +62,23 @@ weatherApp.controller('forecastCtrl', ['$scope','$routeParams','$resource','fore
 		return new Date(dt * 1000);
 	};
 }]);
+
+weatherApp.directive('weatherTag', function(){
+	return {
+		//only look for html elements
+		restrict:'E',
+		templateUrl:'tpl/search-result.htm',
+		//use isolated scope,  we'll have to explicitely pass model from controller to direcive (good practice)
+		scope: {
+			//pass model
+			weatherDay: '=',
+			//pass functions
+			convertToStandardDate : '&',
+			convertToStandardTemp : '&',
+			//pass as text
+			dateFormat : '@'
+		},
+		//replaces custom tag with result
+		replace:true
+	};
+});
