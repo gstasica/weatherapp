@@ -41,14 +41,15 @@ weatherApp.controller('homeCtrl', ['$scope','forecastService', function($scope,f
 }]);
 
 weatherApp.controller('forecastCtrl', ['$scope','$routeParams','$resource','forecastService', function($scope, $routeParams, $resource, forecastService){
-	$scope.city=forecastService.city;
+	$scope.city = forecastService.city;
+	$scope.days = $routeParams.days || '2'
 	
 	$scope.weatherApi = $resource("http://api.openweathermap.org/data/2.5/forecast/daily", 
 		{ callback : 'JSON_CALLBACK' }, { get: { method : 'JSONP' } });
 
 	$scope.weatherResult = $scope.weatherApi.get({
 		q : $scope.city,
-		cnt: $routeParams.days || 1,
+		cnt: $scope.days,
 		//the appId should be replaced with a one that you got after registering at http://api.openweathermap.org/
 		appid:'2de143494c0b295cca9337e1e96b00e0'
 	});
